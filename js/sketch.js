@@ -74,8 +74,8 @@ window.onload = function () {
   moonColour = "black"
   connectorColour = "black"
   circles = []
-  numberOfCircles = Math.ceil(Math.random() * 3) + 2
-  radiusRandom = 100
+  numberOfCircles = Math.ceil(Math.random() * 4) + 4
+  radiusRandom = 280
   radiusMin = 20
   // vary this to change distance moved by blobs:
   offsetProportion = 0.48
@@ -152,11 +152,11 @@ window.onload = function () {
     }
   }
 
-  paper.view.onMouseMove = function (evt) {
-    mousePointX = evt.point.x
-    mousePointY = evt.point.y
-    generateConnections(circles)
-  }
+  // paper.view.onMouseMove = function (evt) {
+  //   mousePointX = evt.point.x
+  //   mousePointY = evt.point.y
+  //   generateConnections(circles)
+  // }
 
   paper.view.onFrame = function (evt) {
     // run at 30fps
@@ -171,10 +171,10 @@ window.onload = function () {
     }
   }
 
-  paper.view.onResize = function (resizeAmount) {
-    currentScale = resizeAmount.size.width / startWidth
-    getScale(resizeAmount.size.width)
-  }
+  // paper.view.onResize = function (resizeAmount) {
+  //   currentScale = resizeAmount.size.width / startWidth
+  //   getScale(resizeAmount.size.width)
+  // }
 
   function getScale() {
     clearTimeout(resizeTimer)
