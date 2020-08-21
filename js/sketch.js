@@ -37,6 +37,9 @@ var widescreenSize
 // mouseposition
 var mousePointX
 var mousePointY
+// tweening
+var deltaX
+var deltaY
 
 // metaballs
 var connections
@@ -90,6 +93,10 @@ window.onload = function () {
   scalingMaxWidth = 1200
   startWidth = paper.view.bounds.width
   strokeWidth = paper.view.size.width > tabletSize ? 1 : 2
+
+  // mouse tweening
+  deltaX = tweenVariable(0)
+  deltaY = tweenVariable(0)
   mousePointX = paper.view.size.width / 2
   mousePointY = paper.view.size.height / 2
   handle_len_rate = 2.2
@@ -152,11 +159,11 @@ window.onload = function () {
     }
   }
 
-  // paper.view.onMouseMove = function (evt) {
-  //   mousePointX = evt.point.x
-  //   mousePointY = evt.point.y
-  //   generateConnections(circles)
-  // }
+  paper.view.onMouseMove = function (evt) {
+    mousePointX = evt.point.x
+    mousePointY = evt.point.y
+    generateConnections(circles)
+  }
 
   paper.view.onFrame = function (evt) {
     // run at 30fps
@@ -168,6 +175,10 @@ window.onload = function () {
         moveCircles(evt.count, i)
       }
       generateConnections(circles)
+
+      // update tweens
+      deltaX.update()
+      deltaY.update()
     }
   }
 
@@ -233,12 +244,11 @@ window.onload = function () {
 
     var spinX = offsetX * Math.sin(count / sin0)
     var spinY = offsetY * Math.sin(count / sin1)
-    var deltaX
-    var deltaY
-    deltaX = (mousePointX - centerX) / (i + 2)
-    deltaY = (mousePointY - centerY) / (i + 2)
-    spinX += deltaX
-    spinY += deltaY
+
+    deltaX.set((mousePointX - centerX) / (i + 2))
+    deltaY.set((mousePointY - centerY) / (i + 2))
+    spinX += deltaX.value()
+    spinY += deltaY.value()
     var point = [spinX, spinY]
 
     circles[i].position = parentPoint.add(point)
@@ -319,6 +329,12 @@ window.onload = function () {
     })
   }
 
+  // In setup, if you have like deltaXTween = tweenVariable(0); // or whatever initial
+  // Then in on frame you do, deltaXTween.update()
+  // then whenever you do the code you posted above, instead of doing deltaX = whatever do deltaXTween.set(whatever)
+  // and then where you use it, use deltaXTween.value() instead of just deltaX
+  // Not 100% itll work in the way you want, but the logic should be there
+
   function lerp(v0, v1, t) {
     return v0 * (1 - t) + v1 * t
   }
@@ -330,7 +346,7 @@ window.onload = function () {
     var set = (v) => (target = v)
 
     var update = () => {
-      val = lerp(val, target, 0.35)
+      val = lerp(val, target, 0.11)
     }
 
     return {
